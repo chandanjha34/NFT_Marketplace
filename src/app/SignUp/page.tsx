@@ -13,13 +13,9 @@ export default function SignUp(){
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
     const [password2,setPassword2]=useState('');
-    console.log(email);
 
     const SignUpHandler=async()=>{
         if(password!=password2) return toast("Enter same password");
-        const headers={
-            'Content-Type': 'application/json',
-        }
         try {
         const response = await axios.post('/api/user/signup',
             JSON.stringify({
@@ -32,6 +28,7 @@ export default function SignUp(){
         Router.push('/');                  
     } catch (error) {
             toast('error');
+            console.log(error);
         }
     }
 
