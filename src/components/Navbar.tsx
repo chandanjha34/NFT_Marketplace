@@ -25,7 +25,7 @@ export default function Navbar(){
                 <div className='cursor-pointer'>Marketplace</div>
                 <div className='cursor-pointer'>Rankings</div>
                 <div className='cursor-pointer'>Connect a Wallet</div>
-                <div><button onMouseEnter={()=>changeStatus(!isActive)} onMouseLeave={()=>changeStatus(!isActive)} onClick={routeToSignup} className={`${isActive?'underline':''}  cursor-pointer w-full h-full bg-[#A259FF] border-black rounded-full px-8`}>Sign Up</button></div>
+                <div><button onMouseEnter={()=>changeStatus(!isActive)} onMouseLeave={()=>changeStatus(!isActive)} onClick={routeToSignup} className={`${isActive?'underline':''} signUpButton cursor-pointer w-full h-full bg-[#A259FF] border-black rounded-full`}>Sign Up</button></div>
             </div>
         </div>
     );
