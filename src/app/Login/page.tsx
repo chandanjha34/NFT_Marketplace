@@ -25,6 +25,7 @@ export default function Login(){
         Router.push('/');                  
     } catch (error) {
             toast('error');
+            console.log(error);
         }
     }
 
