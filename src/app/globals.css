@@ -11,6 +11,6 @@
 
 .signUpButton:hover {
   width: 10vw;
-  box-shadow: 1px 1px 1px 1px white; /* x-offset y-offset blur color */
+  box-shadow: 2px 2px 2px 2px white; /* x-offset y-offset blur color */
 }
 
