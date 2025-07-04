@@ -3,7 +3,6 @@ import User from '@/models/userModel'
 import { NextRequest, NextResponse } from 'next/server'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken';
-import '../../../../../envConfig'
 
 connect()
 
@@ -19,7 +18,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "User not registered" }, { status: 400 })
         }
         console.log('user exists')
-        const validPassword = bcryptjs.compare(password,user.password);
+        const validPassword = await bcryptjs.compare(password,user.password);
     
         if (!validPassword) {
             return NextResponse.json({ error: "Invalid password" }, { status: 400 })
@@ -42,7 +41,10 @@ export async function POST(request: NextRequest) {
         return response
         
 
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 })
+    } catch (error) {
+        if (error instanceof Error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
     }
 }

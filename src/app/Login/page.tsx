@@ -4,17 +4,15 @@ import Link from "next/link";
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Login(){
 
+    const Router = useRouter();
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
 
         const LoginHandler=async()=>{
-        const headers={
-            'Content-Type': 'application/json',
-        }
         try {
             console.log('checkpoint 1');
         const response = await axios.post('/api/user/login',
@@ -41,7 +39,7 @@ export default function Login(){
                     <input type="password" placeholder={` Password`} onChange={(e)=>{setPassword(e.target.value)}} className="border bg-white border-3 border-black rounded-full w-[30vw] placeholder-black placeholder-font-bold h-[9vh] rounded-full"/>
                     <button onClick={()=>{LoginHandler()}} className="border text-white bg-[#A259FF] border-3 border-black rounded-full w-[30vw] h-[9vh] rounded-full font-bold">Login</button>
                 </div>
-                <Link href={'/SignUp'} className="font-lg text-[#37D9E2]">Don't have account ? Create one</Link>
+                <Link href={'/SignUp'} className="font-lg text-[#37D9E2]">Dont have account ? Create one</Link>
             </div>
         </div>
     );
