@@ -2,7 +2,6 @@
 import Image from 'next/image';
 import logo from '../../public/assets/logo.jpg'
 import { useRouter } from 'next/navigation';
-import { useState } from 'react'
 
 export default function Navbar(){
 
@@ -13,7 +12,6 @@ export default function Navbar(){
     }
 
 
-    const [isActive,changeStatus]=useState(true);
 
     return(
         <div className='flex p-3 gap-130 justify-center text-white'>
