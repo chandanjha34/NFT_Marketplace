@@ -1,6 +1,9 @@
+'use client'
 import React from "react";
 import Navbar from "@/components/Navbar";
 import './globals.css'
+import { Provider } from 'react-redux';
+import { store } from "@/Redux/store";
 
 export default function RootLayout({
   children,
@@ -10,8 +13,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-[#2B2B2B]">
-        <Navbar/>
-        {children}
+        <Provider store={store}>
+          <Navbar/>
+          {children}
+        </Provider>
       </body>
     </html>
   );

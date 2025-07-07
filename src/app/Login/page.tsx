@@ -5,9 +5,15 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/Redux/store";
+import { assignUsername } from "@/Redux/features/auth";
 
 export default function Login(){
 
+
+    const username = useSelector((state: RootState) => state.username.value )
+    const dispatch = useDispatch<AppDispatch>();
     const Router = useRouter();
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
@@ -22,6 +28,8 @@ export default function Login(){
             })
         );
         console.log(response.data);
+        dispatch(assignUsername(response.data.username));
+        console.log(username);
         Router.push('/');                  
     } catch (error) {
             toast('error');
