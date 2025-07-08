@@ -1,7 +1,4 @@
 import { ethers } from 'ethers';
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
-import { METHODS } from 'http';
 
 export async function metamaskConnect():Promise<ethers.Signer|null>{
     console.log('Yes sir')
@@ -16,4 +13,3 @@ export async function metamaskConnect():Promise<ethers.Signer|null>{
     return signer;
 
 }
-

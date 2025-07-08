@@ -5,9 +5,14 @@ import { useState } from "react";
 import toast from 'react-hot-toast';
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/Redux/store";
+import { assignUsername } from "@/Redux/features/auth";
 
 export default function SignUp(){
 
+    const Username = useSelector((state: RootState) => state.username.value )
+    const dispatch = useDispatch<AppDispatch>();
     const Router = useRouter();
     const [username,setUsername]=useState('');
     const [email,setEmail]=useState('');
@@ -25,6 +30,8 @@ export default function SignUp(){
             })
         );
         console.log(response.data);
+        dispatch(assignUsername(response.data.username))
+        console.log(Username);
         Router.push('/');                  
     } catch (error) {
             toast('error');
