@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.signUpButton{
+    width: 10vw;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.signUpButton:hover {
+  width: 10vw;
+  box-shadow: 2px 2px 2px 2px white; /* x-offset y-offset blur color */
+}
+
