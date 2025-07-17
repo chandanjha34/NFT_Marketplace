@@ -7,7 +7,7 @@ import type { RootState, AppDispatch } from '../../Redux/store';
 import { assignAddress } from "../../Redux/features/wallet";
 import { useRouter } from 'next/navigation';
 
-const connectWallet = ()=>{
+const ConnectWallet = ()=>{
 
     const Router = useRouter();
     const address = useSelector((state: RootState) => state.address.value );
@@ -41,5 +41,5 @@ const connectWallet = ()=>{
     )
 }
 
-export default connectWallet;
+export default ConnectWallet;
 

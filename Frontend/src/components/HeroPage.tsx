@@ -3,9 +3,8 @@ import Image from "next/image";
 import cover from "../../public/assets/coverPhoto.png"
 import { useState } from "react";
 import axios from "axios";
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '@/Redux/store'
-import { uploadToIPFS } from "@/Wallet/contracts/uploadtoIPFS";
+import { useSelector} from 'react-redux';
+import { RootState} from '@/Redux/store'
 import { useContext} from 'react';
 import { NFTContext } from "@/Wallet/contracts/NFTContext";
 
@@ -13,16 +12,15 @@ import { NFTContext } from "@/Wallet/contracts/NFTContext";
 const Hero=()=>{
 
     const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_uploadPreset;
-    const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_api_key;
     const cloud_name = process.env.NEXT_PUBLIC_CLOUDINARY_cloud_name;
 
-    const [MintForm,showMintFrom]=useState<Boolean>(false);
-    const [name,setName]=useState<String>('');
-    const [Description,setDescription]=useState<String>('');
+    const [MintForm,showMintFrom]=useState<boolean>(false);
+    const [name,setName]=useState<string>('');
+    const [Description,setDescription]=useState<string>('');
     const [media,setMedia]=useState<File | null>(null);
-    const [Category,setCategory]=useState<String>('');
-    const [Price,setPrice]=useState<Number>(0);
-
+    const [Category,setCategory]=useState<string>('');
+    const [Price,setPrice]=useState<number>(0);
+    const address = useSelector((state: RootState) => state.address.value );
     const nftContext = useContext(NFTContext);
     
       // Check if context is available
@@ -31,18 +29,13 @@ const Hero=()=>{
       }
     
       const {
-        connectWallet,
-        mintNFT,
-        transferNFT,
-        currentAccount,
-        error,
+        mintNFT
       } = nftContext;
     
     
     
 
-    const address = useSelector((state: RootState) => state.address.value );
-    const username = useSelector((state: RootState) => state.username.value )
+
 
     const handleSubmit=async()=>{
         const bid = Price;
