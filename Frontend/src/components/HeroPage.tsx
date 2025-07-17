@@ -84,7 +84,7 @@ const Hero=()=>{
 
         // console.log("Metadata uploaded:", { cid, url });
 
-        let url = 'bafkreicbxfdqu5gs27gigycagxagvout3vkppqbw4z65lqwq5kjpkbqnbe';
+        const url = 'bafkreicbxfdqu5gs27gigycagxagvout3vkppqbw4z65lqwq5kjpkbqnbe';
         const tokendata = await mintNFT(url);
           console.log(tokendata);
 
@@ -107,7 +107,7 @@ const Hero=()=>{
                     <div className="text-6xl font-bold">Discover  <br />digital art & Collect NFTs</div>
                     <div className="text-xl">NFT marketplace UI created with Anima for Figma. Collect, buy and sell art from more than 20k NFT artists.</div>
                     <div>
-                        <button className="flex bg-[#A259FF] px-8 py-3 rounded-full flex align-center gap-3">
+                        <button className=" active:scale-95 active:shadow-md hover:border-black border border-2 border-[#A259FF] cursor-pointer flex bg-[#A259FF] px-8 py-3 rounded-full flex align-center gap-3">
                             <span>
                                 <Image src="/assets/Rocket.png" alt="image" width={20} height={20}/>
                             </span>
@@ -132,11 +132,11 @@ const Hero=()=>{
                     </div>
                 </div>
                 <div className="w-[50vw] px-30 py-10">
-                    <Image src={cover} alt="" width={450} height={450}/>
+                    <Image className=" hover:shadow-[0_3px_6px_rgba(255,255,255,0.6)] rounded-xl" src={cover} alt="" width={450} height={450}/>
                 </div>
             </div>
             <div className="absolute right-8 bottom-8">
-                <Image width={80} height={80} alt="mint" onClick={()=>{showMintFrom(!MintForm)}} src={'/assets/plus.png'} className="hover:bg-white rounded-2xl transition-transform duration-500 ease-in-out cursor-pointer"/>
+                <Image width={80} height={80} alt="mint" onClick={()=>{showMintFrom(!MintForm)}} src={'/assets/plus1.png'} className="active:rotate-180 rounded-2xl transition-transform duration-500 ease-in-out cursor-pointer"/>
             </div>
             {
                 MintForm &&
