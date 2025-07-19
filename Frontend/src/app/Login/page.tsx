@@ -28,7 +28,7 @@ export default function Login(){
             })
         );
         console.log(response.data);
-        dispatch(assignUsername(response.data.username));
+        dispatch(assignUsername(response.data.tokenData.username));
         console.log(username);
         Router.push('/');                  
     } catch (error) {

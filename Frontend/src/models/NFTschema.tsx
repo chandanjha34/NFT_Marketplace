@@ -1,20 +1,16 @@
 import mongoose from "mongoose";
 
 const NFTschema = new mongoose.Schema({
-    email:{
+    userID:{
         type : mongoose.Schema.Types.ObjectId,
         ref:"User",
-        unique: true,
-        required: [true,"Enter email address"],
     },
     address:{
         type : String,
-        unique:true,
         required:[true,"Do log in first"],
     },
     name:{
         type : String,
-        unique: true,
         required:[true,"Enter Name of this NFT"]
     },
     Description:{
@@ -27,7 +23,7 @@ const NFTschema = new mongoose.Schema({
     Category:{
         type : String,
         enum:["Art","RWA","Icon","Star"],
-        requried:[true,"Enter category"],
+        required:[true,"Enter category"],
     },
 
     createdAt: {
@@ -45,6 +41,9 @@ const NFTschema = new mongoose.Schema({
 
 })
 
-const NFT = mongoose.models.NFT || mongoose.model("NFT",NFTschema)
+if (mongoose.models.NFT) {
+  delete mongoose.models.NFT;
+}
+const NFT = mongoose.model("NFT", NFTschema);
 
-export default NFT
+export default NFT;

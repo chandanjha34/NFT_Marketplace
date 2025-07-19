@@ -3,13 +3,13 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     username:{
         type:String,
-        require:[true,"Please provide a username"],
-        unique:true
+        required:[true,"Please provide a username"],
+        unique: true
     },
     email: {
         type: String,
-        required: [true, "Please provide a username"],
-        unique: true,
+        required: [true, "Please provide a email"],
+        unique: true
     },
     password: {
         type: String,
@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
     },
 })
 
-const User = mongoose.models.User || mongoose.model("User", userSchema)
+if (mongoose.models.User) {
+  delete mongoose.models.User;
+}
+
+const User =mongoose.model("User", userSchema)
 
 export default User;

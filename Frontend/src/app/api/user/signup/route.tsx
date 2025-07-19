@@ -24,9 +24,9 @@ export async function POST(request: NextRequest) {
             email,
             password: hashedPassword
         })
-        
+        console.log("response from server",newUser);
         // send verification email
-
+        await newUser.save();
         return NextResponse.json({
             message: "User created succesfully",
             success: true,
