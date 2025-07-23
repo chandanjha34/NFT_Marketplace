@@ -22,7 +22,7 @@ const NFTschema = new mongoose.Schema({
     },
     Category:{
         type : String,
-        enum:["Art","RWA","Icon","Star"],
+        enum:["Art","RWA","Icon","Stars"],
         required:[true,"Enter category"],
     },
 

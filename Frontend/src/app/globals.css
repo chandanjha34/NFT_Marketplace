@@ -14,3 +14,7 @@
   box-shadow: 2px 2px 2px 2px white; /* x-offset y-offset blur color */
 }
 
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}
+
