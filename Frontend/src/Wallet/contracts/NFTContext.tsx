@@ -2,10 +2,10 @@
 
 import React, { createContext, useState, useEffect, ReactNode, useContext } from 'react';
 import Web3Modal from 'web3modal';
-import { BrowserProvider, Contract, Log, parseUnits } from 'ethers';
+import { BrowserProvider, Contract, Log} from 'ethers';
 import ABI from "./NFT_Minting_ABI.json";
 import { CONTRACT_ADDRESS } from "./contractAddress";
-import { parseEther} from "ethers";
+
 
 interface NFTContextType {
   currentAccount: string;
@@ -95,7 +95,7 @@ export const NFTProvider = ({ children }: { children: ReactNode }) => {
       console.log("miniting completed");
 
       const mintedEventLog = receipt.logs.find(
-            (log: any) => {
+            (log: Log) => {
                 try {
                     // This checks if the log can be parsed and is the correct event
                     return contract.interface.parseLog(log)?.name === 'NFT_Minted';
