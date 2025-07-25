@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/Redux/store";
 import { assignUsername } from "@/Redux/features/auth";
+import { assignEmail } from "@/Redux/features/email";
 
 export default function Login(){
 
@@ -29,6 +30,7 @@ export default function Login(){
         );
         console.log(response.data);
         dispatch(assignUsername(response.data.tokenData.username));
+        dispatch(assignEmail(response.data.tokenData.email))
         console.log(username);
         Router.push('/');                  
     } catch (error) {

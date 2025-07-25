@@ -7,7 +7,8 @@ const nextConfig = {
       "ipfs.io",                // Example - IPFS gateway
       "gateway.pinata.cloud",   // Another IPFS gateway
       "cdn.example.com",       // Replace/add your actual image domains here
-      "images.pexels.com"
+      "images.pexels.com",
+      "res.cloudinary.com"
     ],
     
   },

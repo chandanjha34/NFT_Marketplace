@@ -26,8 +26,10 @@ export async function GET() {
             }
         });
         
-    } catch (error: any) {
-        // It's better to return error.message to not leak server details
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error) {
+        if (error instanceof Error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
     }
 }

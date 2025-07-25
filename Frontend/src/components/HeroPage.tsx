@@ -20,7 +20,9 @@ const Hero=()=>{
     const [media,setMedia]=useState<File | null>(null);
     const [Category,setCategory]=useState<string>('');
     const [Price,setPrice]=useState<number>(0);
+
     const address = useSelector((state: RootState) => state.address.value );
+    const email = useSelector((state: RootState) => state.email.value );
     const nftContext = useContext(NFTContext);
     
       // Check if context is available
@@ -38,12 +40,12 @@ const Hero=()=>{
 
 
     const handleSubmit=async()=>{
-        const bid = Price;
+        let bid;
         const createdAt = Date.now();
         console.log(bid);
         let MediaURL;
 
-
+      
         if(!media){
             console.log('media is not inserted')
             return;
@@ -78,14 +80,14 @@ const Hero=()=>{
         // console.log("Metadata uploaded:", { cid, url });
 
         const url = 'bafkreicbxfdqu5gs27gigycagxagvout3vkppqbw4z65lqwq5kjpkbqnbe';
-        const tokendata = await mintNFT(url);
-          console.log(tokendata);
+        bid = await mintNFT(url);
+          console.log(bid);
 
         } catch (error) {
             console.error("Error uploading image:", error);
         } 
         console.log(media);
-        const email = "jha924@gmail.com";
+        console.log(bid,Price);
         const response = await axios.post('/api/nft/mint',JSON.stringify({
             email, address, name, Description, MediaURL, Category, Price, bid, createdAt
         }));

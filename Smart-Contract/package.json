@@ -14,7 +14,7 @@
     "@nomicfoundation/hardhat-toolbox": "^6.0.0",
     "@types/node": "^24.0.13",
     "ethers": "^6.15.0",
-    "hardhat": "^2.25.0",
+    "hardhat": "^2.26.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },

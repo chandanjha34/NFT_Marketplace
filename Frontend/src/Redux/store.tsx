@@ -1,12 +1,14 @@
 'use client'
 import { configureStore } from '@reduxjs/toolkit';
 import assignAdress from './features/wallet'
+import assignEmail from './features/email';
 import assignUsername from '../Redux/features/auth';
 
 export const store = configureStore({
     reducer: {
         address:assignAdress,
-        username:assignUsername
+        username:assignUsername,
+        email:assignEmail
     }
 });
 

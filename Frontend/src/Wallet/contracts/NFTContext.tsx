@@ -2,16 +2,17 @@
 
 import React, { createContext, useState, useEffect, ReactNode, useContext } from 'react';
 import Web3Modal from 'web3modal';
-import { BrowserProvider, Contract, parseUnits } from 'ethers';
+import { BrowserProvider, Contract, Log, parseUnits } from 'ethers';
 import ABI from "./NFT_Minting_ABI.json";
 import { CONTRACT_ADDRESS } from "./contractAddress";
+import { parseEther} from "ethers";
 
 interface NFTContextType {
   currentAccount: string;
   error: string | null;
   connectWallet: () => Promise<void>;
   mintNFT: (tokenURI: string) => Promise<string>; // Returns tx hash
-  transferNFT: (tokenId: number, price: string) => Promise<string>; // Returns tx hash
+  transferNFT: (tokenId: number, price: bigint, balance: bigint) => Promise<string>; // Returns tx hash
 }
 
 export const NFTContext = createContext<NFTContextType | undefined>(undefined);
@@ -89,9 +90,38 @@ export const NFTProvider = ({ children }: { children: ReactNode }) => {
     try {
       const contract = await getContract();
       const tx = await contract.mintNFT(tokenURI);
-      await tx.wait();
+      const receipt = await tx.wait();
+      console.log(receipt);
       console.log("miniting completed");
-      return tx.hash;
+
+      const mintedEventLog = receipt.logs.find(
+            (log: any) => {
+                try {
+                    // This checks if the log can be parsed and is the correct event
+                    return contract.interface.parseLog(log)?.name === 'NFT_Minted';
+                } catch {
+                    // Ignore logs that can't be parsed by this interface
+                    return false;
+                }
+            }
+        );
+
+        if (mintedEventLog) {
+            const parsedLog = contract.interface.parseLog(mintedEventLog);
+
+            // ✅ Add this check to ensure parsedLog is not null
+            if (parsedLog) {
+                const tokenId: bigint = parsedLog.args.tokenId;
+                console.log("Minted token ID:", tokenId.toString());
+                return tokenId.toString();
+            }
+        }
+
+        // This part runs if the event was not found or couldn't be parsed
+        console.warn("NFT_Minted event not found in logs.");
+        return tx.hash;
+
+      
     } catch (err) {
       console.error('Minting failed:', err);
       setError(err instanceof Error ? err.message : 'Minting failed');
@@ -99,20 +129,25 @@ export const NFTProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const transferNFT = async (tokenId: number, price: string): Promise<string> => {
-    try {
-      const contract = await getContract();
-      const tx = await contract.NFT_transfer(tokenId, {
-        value: parseUnits(price, 18)
-      });
-      await tx.wait();
-      return tx.hash;
-    } catch (err) {
-      console.error('Transfer failed:', err);
-      setError(err instanceof Error ? err.message : 'Transfer failed');
-      throw err;
-    }
-  };
+const transferNFT = async (
+  tokenId: number,
+  price: bigint,
+  balance: bigint
+): Promise<string> => {
+  try {
+    const contract = await getContract();
+    const tx = await contract.NFT_transfer(tokenId, price, {
+      value: balance,
+    });
+    await tx.wait();
+    return tx.hash;
+  } catch (err) {
+    console.error("Transfer failed:", err);
+    setError(err instanceof Error ? err.message : "Transfer failed");
+    throw err;
+  }
+};
+
 
   return (
     <NFTContext.Provider value={{

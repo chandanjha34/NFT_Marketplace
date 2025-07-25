@@ -18,7 +18,7 @@ export async function POST(request:NextRequest){
             console.log(email,address,name,Description,MediaURL,Category);
             return NextResponse.json({error:"Fill all inputs"},{status:403});
         }
-
+        console.log(Price,bid);
         if(!Price){
             Price = 0;
         }
@@ -29,7 +29,7 @@ export async function POST(request:NextRequest){
         const user = await User.findOne({ email });
         console.log(user);
         if(!user) return NextResponse.json({"message":"User not registered"});
-
+        
         const NFTData = new NFT({
             userID: user._id, address, name, Description, MediaURL, Category, Price, bid, createdAt
         })
