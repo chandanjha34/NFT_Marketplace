@@ -13,6 +13,7 @@ interface NFTContextType {
   connectWallet: () => Promise<void>;
   mintNFT: (tokenURI: string) => Promise<string>; // Returns tx hash
   transferNFT: (tokenId: number, price: bigint, balance: bigint) => Promise<string>; // Returns tx hash
+  getUserNFT:(address: string)=>Promise<number[]>
 }
 
 export const NFTContext = createContext<NFTContextType | undefined>(undefined);
@@ -148,6 +149,20 @@ const transferNFT = async (
   }
 };
 
+const getUserNFT = async (address: string): Promise<number[]> => {
+  try {
+    const contract = await getContract();
+    const userNFTs: bigint[] = await contract.getUserNFTs(address);
+    const result = userNFTs.map((nft) => Number(nft));
+    console.log("User NFTs:", result);
+    return result;
+  } catch (error) {
+    console.error("Error fetching user NFTs:", error);
+    setError("Failed to get NFTs");
+    return [];
+  }
+};
+
 
   return (
     <NFTContext.Provider value={{
@@ -155,7 +170,8 @@ const transferNFT = async (
       error,
       connectWallet,
       mintNFT,
-      transferNFT
+      transferNFT,
+      getUserNFT
     }}>
       {children}
     </NFTContext.Provider>

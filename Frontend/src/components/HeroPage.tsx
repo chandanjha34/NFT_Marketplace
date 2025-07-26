@@ -7,7 +7,7 @@ import { useSelector} from 'react-redux';
 import { RootState} from '@/Redux/store'
 import { useContext} from 'react';
 import { NFTContext } from "@/Wallet/contracts/NFTContext";
-
+import { toast } from "react-toastify";
 
 const Hero=()=>{
 
@@ -33,16 +33,9 @@ const Hero=()=>{
       const {
         mintNFT
       } = nftContext;
-    
-    
-    
-
-
 
     const handleSubmit=async()=>{
-        let bid;
         const createdAt = Date.now();
-        console.log(bid);
         let MediaURL;
 
       
@@ -55,7 +48,7 @@ const Hero=()=>{
         formData.append("file",media);
         formData.append("upload_preset", uploadPreset as string);
         console.log(formData);
-
+        let bid = '12';
         try {
             const res = await axios.post(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,formData);
             MediaURL = res.data.secure_url;
@@ -81,7 +74,8 @@ const Hero=()=>{
 
         const url = 'bafkreicbxfdqu5gs27gigycagxagvout3vkppqbw4z65lqwq5kjpkbqnbe';
         bid = await mintNFT(url);
-          console.log(bid);
+        toast.success("NFT Minted, Check your wallet")
+        console.log(bid);
 
         } catch (error) {
             console.error("Error uploading image:", error);

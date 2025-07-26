@@ -2,9 +2,9 @@ import Image from "next/image";
 import React, { JSX } from "react"
 import { useContext} from 'react';
 import { NFTContext } from "@/Wallet/contracts/NFTContext";
-import { BrowserProvider, ethers } from "ethers";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from '@/Redux/store';
+import { BrowserProvider} from "ethers";
+import { useSelector} from "react-redux";
+import { RootState} from '@/Redux/store';
 import { parseEther, formatEther } from "ethers";
 
     interface typeNFT {
@@ -22,7 +22,6 @@ import { parseEther, formatEther } from "ethers";
 
     interface CateoryProps{
         NFT: typeNFT[],
-
     }
 
 

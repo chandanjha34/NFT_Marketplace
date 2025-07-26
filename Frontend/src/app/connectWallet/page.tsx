@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from '../../Redux/store';
 import { assignAddress } from "../../Redux/features/wallet";
 import { useRouter } from 'next/navigation';
+import { toast } from "react-toastify";
 
 const ConnectWallet = ()=>{
 
@@ -18,7 +19,7 @@ const ConnectWallet = ()=>{
         let value: ethers.Signer | null = null;
 
         if(type=='metamask') value = await metamaskConnect();
-
+        toast.success("Wallet Connected");
         console.log(value);
         const Address  = await value?.getAddress();
         dispatch(assignAddress(Address as string));

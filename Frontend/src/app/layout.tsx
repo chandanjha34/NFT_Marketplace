@@ -5,6 +5,8 @@ import './globals.css'
 import { Provider } from 'react-redux';
 import { store } from "@/Redux/store";
 import { NFTProvider } from "@/Wallet/contracts/NFTContext";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function RootLayout({
   children,
@@ -18,6 +20,7 @@ export default function RootLayout({
         <Provider store={store}>
           <Navbar/>
           {children}
+          <ToastContainer position="top-right" autoClose={5000} />
         </Provider>
       </NFTProvider>
       </body>

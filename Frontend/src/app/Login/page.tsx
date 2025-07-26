@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/Redux/store";
@@ -28,14 +28,26 @@ export default function Login(){
                 password:password,
             })
         );
+        if(response.data.success){
+            toast.success(response.data.message,{
+            position:"top-center",
+            closeButton:true
+        })
+        }else{
+            toast.error(response.data.message) 
+        }
         console.log(response.data);
         dispatch(assignUsername(response.data.tokenData.username));
         dispatch(assignEmail(response.data.tokenData.email))
         console.log(username);
         Router.push('/');                  
-    } catch (error) {
-            toast('error');
-            console.log(error);
+    } catch (error:unknown) {
+          const errMsg = error instanceof Error ? error.message : String(error);
+          toast.error(errMsg,{
+            position:"top-center",
+            closeButton:true
+        });
+          console.error(error);
         }
     }
 
@@ -48,7 +60,7 @@ export default function Login(){
                 <div className="flex flex-col h-[30vh] justify-between">
                     <input type="email"    placeholder={` Email Address`} onChange={(e)=>{setEmail(e.target.value)}} className="border bg-white border-3 placeholder-black placeholder-font-bold border-black rounded-full w-[30vw] h-[9vh] rounded-full"/>
                     <input type="password" placeholder={` Password`} onChange={(e)=>{setPassword(e.target.value)}} className="border bg-white border-3 border-black rounded-full w-[30vw] placeholder-black placeholder-font-bold h-[9vh] rounded-full"/>
-                    <button onClick={()=>{LoginHandler()}} className="border text-white bg-[#A259FF] border-3 border-black rounded-full w-[30vw] h-[9vh] rounded-full font-bold">Login</button>
+                    <button onClick={()=>{LoginHandler()}} className="cursor-pointer active:scale-80 border text-white bg-[#A259FF] border-3 border-black rounded-full w-[30vw] h-[9vh] rounded-full font-bold">Login</button>
                 </div>
                 <Link href={'/SignUp'} className="font-lg text-[#37D9E2]">Dont have account ? Create one</Link>
             </div>

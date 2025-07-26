@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import toast from 'react-hot-toast';
+import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
@@ -29,6 +29,10 @@ export default function SignUp(){
                 password:password,
             })
         );
+        toast.success('Welcome to NFT Marketplace',{
+            position:"top-center",
+            closeButton:true
+        })
         console.log(response.data);
         dispatch(assignUsername(response.data.newUser.username as string));
         console.log(username);
@@ -38,8 +42,12 @@ export default function SignUp(){
 
         Router.push('/');                  
     } catch (error) {
-            toast('error');
-            console.log(error);
+          const errMsg = error instanceof Error ? error.message : String(error);
+          toast.error(errMsg,{
+            position:"top-center",
+            closeButton:true
+        });
+          console.error(error);
         }
     }
 
