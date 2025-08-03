@@ -1,110 +1,140 @@
 'use client';
+
+import { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
-import logo from '../../public/assets/logo.jpg'
 import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '@/Redux/store';
-import { toast } from 'react-toastify';
-import { assignAddress } from '@/Redux/features/wallet';
-import { useEffect, useState } from 'react';
-import { useContext} from 'react';
-import { NFTContext } from "@/Wallet/contracts/NFTContext";
 import axios from 'axios';
+import { toast } from 'react-toastify'; // Assuming you might use this for errors
 
-export default function Navbar(){
+// --- Component-specific types (Can be moved to a separate types file) ---
+import logo from '../../public/assets/logo.jpg';
+import { RootState, AppDispatch } from '@/Redux/store';
+import { assignAddress } from '@/Redux/features/wallet';
+import { NFTContext } from '@/Wallet/contracts/NFTContext';
 
-    interface typeNFT {
-        _id: string;
-        userID: string;
-        name: string;
-        address: string;
-        Description?: string;
-        MediaURL: string;
-        Category: string;
-        Price: number;
-        bid: number;
-        createdAt: number;
-    }
+interface NftMetadata {
+    _id: string;
+    userID: string;
+    name: string;
+    address: string;
+    Description?: string;
+    MediaURL: string;
+    Category: string;
+    Price: number;
+    bid: number;
+    createdAt: number;
+}
 
-    const address = useSelector((state: RootState) => state.address.value );
-    const dispatch = useDispatch<AppDispatch>();
 
-    const username = useSelector((state: RootState) => state.username.value )
-
-    const [profile,showProfile]=useState<boolean>(false);
-    const [logged,setLogged]=useState<boolean>(false);
-    const [metadata,setMetadata]=useState<typeNFT[]>([]);
-    const Router = useRouter();
-
+export default function Navbar() {
+    // --- 1. Hooks are called first and grouped together ---
+    const router = useRouter();
     const nftContext = useContext(NFTContext);
-        
-          // Check if context is available
-    if (!nftContext) {
-      return <p>Error loading NFT context.</p>;
-    }
+    const dispatch = useDispatch<AppDispatch>();
     
-    const {
-      getUserNFT
-    } = nftContext;
+    // Redux state selectors
+    const address = useSelector((state: RootState) => state.address.value);
+    const username = useSelector((state: RootState) => state.username.value);
 
-    const routeToSignup=()=>{
-        setLogged(true);
-        Router.push('/SignUp');
+    // Component state
+    const [profile, showProfile] = useState<boolean>(false);
+    const [logged, setLogged] = useState<boolean>(false); // Consider deriving this from username
+    const [metadata, setMetadata] = useState<NftMetadata[]>([]);
+    
+    // --- 2. Early return for loading/error states (after hooks) ---
+    if (!nftContext) {
+      // This is a valid place for an early return
+      return <p>Loading Wallet Connection...</p>;
     }
 
-    const walletLogic = () =>{
-        if(address){
-            dispatch(assignAddress(''))
-            return
-        } else{
-        Router.push('/connectWallet')
+    // Destructure context after the check to ensure it's not null
+    const { getUserNFT } = nftContext;
+    
+    // --- 3. Handler functions defined before being used in JSX ---
+    const routeToSignup = () => {
+        setLogged(true); // This state seems redundant if you have `username`
+        router.push('/SignUp');
+    };
+
+    const walletLogic = () => {
+        if (address) {
+            dispatch(assignAddress('')); // Disconnect logic
+        } else {
+            router.push('/connectWallet');
         }
-    }
+    };
 
-    useEffect(()=>{
-        
-    const getAllNFTs = async()=>{
-        try {
-            const nfts = await getUserNFT(address as string);
-            console.log(nfts);
-            const response = await axios.get('/api/nft/profile',{
-                params:{nfts}
-            })
-            console.log(response.data);
-            const userNFTs:typeNFT[] = response.data.array;
-            setMetadata(userNFTs);
-        
-            
-        } catch (error) {
-                console.log(error);}
-    }
-    getAllNFTs();
-    },[address])
+    // --- 4. useEffect for side-effects (like fetching data) ---
+    useEffect(() => {
+        // Define the async function inside the effect
+        const getAllNFTs = async () => {
+            if (!address) {
+                setMetadata([]); // Clear NFTs if user disconnects
+                return;
+            };
 
-    return(
+            try {
+                // Fetch token IDs from the smart contract
+                const nftTokenIds = await getUserNFT(address);
+                if (nftTokenIds.length === 0) {
+                    setMetadata([]);
+                    return;
+                }
+
+                // Fetch metadata from your backend API
+                const response = await axios.get('/api/nft/profile', {
+                    params: { nfts: nftTokenIds }
+                });
+                
+                const userNFTs: NftMetadata[] = response.data.array;
+                setMetadata(userNFTs);
+
+            } catch (error) {
+                console.error("Failed to fetch user NFTs:", error);
+                toast.error("Could not fetch your NFTs."); // Example of user feedback
+            }
+        };
+
+        getAllNFTs();
+    
+    // Dependency array: re-run when address or getUserNFT function changes.
+    }, [address, getUserNFT]);
+
+
+    // --- 5. JSX Return Statement ---
+    return (
         <div className='flex p-3 gap-130 justify-center text-white'>
             <div className='flex flex-row justify-center items-center gap-4'>
                 <div><Image src={logo} alt="logo" width={40} height={40} /></div>
                 <div className='font-semibold'>NFT MARKETPLACE</div>
             </div>
+
             <div className='flex flex-row w-[40vw] justify-between items-center'>
                 <div className='cursor-pointer hover:[text-shadow:0_0_15px_rgba(255,255,255,0.9)]'>Marketplace</div>
                 <div className='cursor-pointer hover:[text-shadow:0_0_15px_rgba(255,255,255,0.9)]'>Rankings</div>
-                <div className='cursor-pointer hover:[text-shadow:0_0_15px_rgba(255,255,255,0.9)]' onClick={walletLogic}>{address?`${address.slice(0,7)}...${address.slice(39,41)}`:'Connect a wallet'}</div>
-                <div><button onClick={logged ? () => showProfile(!profile) : () => routeToSignup()} className={`transform transition-transform duration-100 ease-out active:scale-95 active:shadow-md hover:border-black  w-[10vw] bg-[#A259FF] px-8 cursor-pointer text-black font-white h-10 border border-2 border-[#A259FF] rounded-full`}>{username?`${(username.split('.'[0]))}`:'Sign Up'}</button></div>
+                <div className='cursor-pointer hover:[text-shadow:0_0_15px_rgba(255,255,255,0.9)]' onClick={walletLogic}>
+                    {address ? `${address.slice(0, 7)}...${address.slice(-4)}` : 'Connect a wallet'}
+                </div>
+                <div>
+                    <button onClick={username ? () => showProfile(!profile) : routeToSignup} className={`transform transition-transform duration-100 ease-out active:scale-95 active:shadow-md hover:border-black w-[10vw] bg-[#A259FF] px-8 cursor-pointer text-white h-10 border border-2 border-[#A259FF] rounded-full`}>
+                        {username ? username.split('@')[0] : 'Sign Up'}
+                    </button>
+                </div>
             </div>
 
-            {
-                profile && 
-                    <div className='flex scrollbar-hide flex-col items-center py-4 bg-white w-[20vw] h-[80vh] overflow-y-scroll right-2 bottom-8 rounded-lg absolute'>
-                            {metadata.map((nft)=>(
-                                <div key={nft._id} className='flex flex-col'>
-                                    <Image src={nft.MediaURL} width={200} height={200} alt='nft.name'/>
-                                    <div>{nft.name}</div>
-                                </div>
-                            ))}
-                    </div>
-            }
+            {profile && (
+                <div className='flex scrollbar-hide flex-col items-center py-4 bg-white text-black w-[20vw] h-[80vh] overflow-y-scroll right-2 bottom-8 rounded-lg absolute'>
+                    {metadata.length > 0 ? metadata.map((nft) => (
+                        <div key={nft._id} className='flex flex-col mb-4'>
+                            <Image src={nft.MediaURL} width={200} height={200} alt={nft.name} className='rounded-md' />
+                            <div className='font-semibold mt-2'>{nft.name}</div>
+                        </div>
+                    )) : (
+                        <p>No NFTs found.</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

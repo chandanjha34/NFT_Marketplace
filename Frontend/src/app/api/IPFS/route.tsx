@@ -54,11 +54,10 @@ export async function POST(req: NextRequest) {
     // 7. Return success response
     return NextResponse.json({ success: true, tokenUri });
 
-  } catch (error: any) {
-    console.error('Error in /api/IPFS:', error.response?.data || error.message);
-    return NextResponse.json(
-      { success: false, error: 'Internal Server Error' },
-      { status: 500 }
-    );
+  }  catch (error) {
+        if (error instanceof Error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
+  return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
+    }
 }

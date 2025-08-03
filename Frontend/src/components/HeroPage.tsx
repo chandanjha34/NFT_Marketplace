@@ -20,11 +20,9 @@ const Hero=()=>{
     const [media,setMedia]=useState<File | null>(null);
     const [Category,setCategory]=useState<string>('');
     const [Price,setPrice]=useState<number>(0);
-    const [uri,setURI] = useState<string>('');
 
     const address = useSelector((state: RootState) => state.address.value );
     const email = useSelector((state: RootState) => state.email.value );
-    const username = useSelector((state: RootState) => state.username.value );
     const nftContext = useContext(NFTContext);
     
     
