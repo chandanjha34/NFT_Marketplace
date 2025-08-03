@@ -19,7 +19,8 @@ contract NFT_Minting is ERC721URIStorage, Ownable{
         tokenCounter=0;
     }
 
-    function getUserNFTs(address to)external view returns(uint256[] memory){
+    function getUserNFTs(address to) external view returns(uint256[] memory){
+        emit User_NFTs(userNFTs[to]);
         return userNFTs[to];
     }
 

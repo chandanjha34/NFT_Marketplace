@@ -6,7 +6,6 @@ import { BrowserProvider, Contract, Log} from 'ethers';
 import ABI from "./NFT_Minting_ABI.json";
 import { CONTRACT_ADDRESS } from "./contractAddress";
 
-
 interface NFTContextType {
   currentAccount: string;
   error: string | null;
@@ -43,7 +42,7 @@ export const NFTProvider = ({ children }: { children: ReactNode }) => {
       
       setCurrentAccount(accounts[0]);
       setError(null);
-      
+
       // Subscribe to accounts change
       instance.on("accountsChanged", (accounts: string[]) => {
         setCurrentAccount(accounts[0] || '');
@@ -152,10 +151,16 @@ const transferNFT = async (
 const getUserNFT = async (address: string): Promise<number[]> => {
   try {
     const contract = await getContract();
-    const userNFTs: bigint[] = await contract.getUserNFTs(address);
-    const result = userNFTs.map((nft) => Number(nft));
-    console.log("User NFTs:", result);
-    return result;
+    console.log('checkpoint 2');
+    
+    const result: bigint[] = await contract.getUserNFTs(address);
+    console.log('User NFTs:', result);
+
+    // Convert BigInt to Number
+    const nftArray = result.map(nft => Number(nft));
+    console.log("Final token IDs:", nftArray);
+    return nftArray;
+
   } catch (error) {
     console.error("Error fetching user NFTs:", error);
     setError("Failed to get NFTs");

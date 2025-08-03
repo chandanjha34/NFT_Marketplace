@@ -17,11 +17,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[#2B2B2B]">
       <NFTProvider>
-        <Provider store={store}>
-          <Navbar/>
-          {children}
-          <ToastContainer position="top-right" autoClose={5000} />
-        </Provider>
+          <Provider store={store}>
+            <Navbar/>
+            {children}
+            <ToastContainer position="top-right" autoClose={5000} />
+          </Provider>
       </NFTProvider>
       </body>
     </html>

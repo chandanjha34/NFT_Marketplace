@@ -83,7 +83,7 @@ const TransferNFT = async ({ bid, price }: { bid: number; price: number }) => {
 
     return(
         <div className="w-full overflow-x-scroll  scrollbar-hidden">
-            <div className="flex gap-8 w-[240vw] justify-around scrollbar-hide">
+            <div className="flex gap-8 justify-around scrollbar-hide" style={{ width: `${20 * NFT.length}rem` }}>
                 {
                  Array.isArray(NFT) &&   NFT.map((nft)=>(
                         <div key={nft._id} className="flex flex-col items-center justify-between w-[20vw] h-[25vw] overflow-visible">

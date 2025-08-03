@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import cover from "../../public/assets/coverPhoto.png"
-import { useState } from "react";
+import { useState} from "react";
 import axios from "axios";
 import { useSelector} from 'react-redux';
 import { RootState} from '@/Redux/store'
@@ -20,12 +20,15 @@ const Hero=()=>{
     const [media,setMedia]=useState<File | null>(null);
     const [Category,setCategory]=useState<string>('');
     const [Price,setPrice]=useState<number>(0);
+    const [uri,setURI] = useState<string>('');
 
     const address = useSelector((state: RootState) => state.address.value );
     const email = useSelector((state: RootState) => state.email.value );
+    const username = useSelector((state: RootState) => state.username.value );
     const nftContext = useContext(NFTContext);
     
-      // Check if context is available
+    
+    
       if (!nftContext) {
         return <p>Error loading NFT context.</p>;
       }
@@ -34,11 +37,10 @@ const Hero=()=>{
         mintNFT
       } = nftContext;
 
+
     const handleSubmit=async()=>{
         const createdAt = Date.now();
         let MediaURL;
-
-      
         if(!media){
             console.log('media is not inserted')
             return;
@@ -55,25 +57,22 @@ const Hero=()=>{
             console.log("Cloudinary response:", res.data);
 
             
-        // const metadata = {
-        //   name,
-        //   description: Description,
-        //   image: MediaURL,
-        //   attributes: [
-        //     { trait_type: "Category", value: Category },
-        //     { trait_type: "Creator", value: username || "Anonymous" }
-        //   ]
-        // };
+        const ipfsResponse = await axios.post('/api/IPFS', {
+                name: name,
+                description: Description,
+                image: MediaURL,
+            });
+            console.log(ipfsResponse)
+            const uri = ipfsResponse.data.tokenUri;
+            console.log(uri);
 
-        // const { cid, url } = await uploadToIPFS(
-        //   new Blob([JSON.stringify(metadata)], { type: "application/json" }),
-        //   `metadata_${Date.now()}.json`
-        // );
+            if (!uri) {
+                throw new Error("Failed to get Token URI from server.");
+            }
+            console.log("Received Token URI from backend:", uri);
 
-        // console.log("Metadata uploaded:", { cid, url });
-
-        const url = 'bafkreicbxfdqu5gs27gigycagxagvout3vkppqbw4z65lqwq5kjpkbqnbe';
-        bid = await mintNFT(url);
+            // --- Step 3: Mint the NFT with the secure URI ---
+        bid = await mintNFT(uri);
         toast.success("NFT Minted, Check your wallet")
         console.log(bid);
 
