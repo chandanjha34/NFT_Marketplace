@@ -29,41 +29,24 @@ export default function Navbar() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
+  // ✅ ALL HOOKS CALLED FIRST
   const nftContext = useContext(NFTContext);
   const address = useSelector((state: RootState) => state.address.value);
   const username = useSelector((state: RootState) => state.username.value);
-
-  const [profile, showProfile] = useState<boolean>(false);
+  const [profile, showProfile] = useState(false);
   const [metadata, setMetadata] = useState<NftMetadata[]>([]);
 
-  // ✅ Early return before calling any hooks below
-  if (!nftContext) {
-    return <p>Loading Wallet Connection...</p>;
-  }
-
-  const { getUserNFT } = nftContext;
-
-  const routeToSignup = () => {
-    router.push('/SignUp');
-  };
-
-  const walletLogic = () => {
-    if (address) {
-      dispatch(assignAddress('')); // Disconnect
-    } else {
-      router.push('/connectWallet');
-    }
-  };
-
+  // ✅ useEffect always called unconditionally
   useEffect(() => {
     const getAllNFTs = async () => {
-      if (!address) {
+      if (!nftContext || !address) {
         setMetadata([]);
         return;
       }
 
       try {
-        const nftTokenIds = await getUserNFT(address);
+        const nftTokenIds = await nftContext.getUserNFT(address);
+
         if (nftTokenIds.length === 0) {
           setMetadata([]);
           return;
@@ -82,8 +65,16 @@ export default function Navbar() {
     };
 
     getAllNFTs();
-  }, [address, getUserNFT]);
+  }, [address, nftContext]);
 
+  const routeToSignup = () => router.push('/SignUp');
+
+  const walletLogic = () => {
+    if (address) dispatch(assignAddress(''));
+    else router.push('/connectWallet');
+  };
+
+  // ✅ Render safely even when nftContext is not ready
   return (
     <div className="flex p-3 gap-130 justify-center text-white">
       <div className="flex flex-row justify-center items-center gap-4">
