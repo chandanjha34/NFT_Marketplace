@@ -1,4 +1,5 @@
 // app/layout.tsx
+import Navbar from '@/components/Navbar';
 import './globals.css';
 import { AppProviders } from './providers';
 import type { Metadata } from 'next';
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-[#2B2B2B]">
         <AppProviders>
+          <Navbar/>
           {children}
         </AppProviders>
       </body>
