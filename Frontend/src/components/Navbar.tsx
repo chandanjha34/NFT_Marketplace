@@ -6,11 +6,11 @@ import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
 import logo from '../../public/assets/logo.jpg';
 import { RootState, AppDispatch } from '@/Redux/store';
-import { assignAddress } from '@/Redux/features/wallet';
+import { assignAddress, } from '@/Redux/features/wallet';
 import { NFTContext } from '@/Wallet/contracts/NFTContext';
+import { assignUsername } from '@/Redux/features/auth';
 
 interface NftMetadata {
   _id: string;
@@ -28,14 +28,13 @@ interface NftMetadata {
 export default function Navbar() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-
   // ✅ ALL HOOKS CALLED FIRST
   const nftContext = useContext(NFTContext);
   const address = useSelector((state: RootState) => state.address.value);
   const username = useSelector((state: RootState) => state.username.value);
   const [profile, showProfile] = useState(false);
   const [metadata, setMetadata] = useState<NftMetadata[]>([]);
-
+  const [isLoggedIn,setLoggedIn] = useState<boolean>(false);
   // ✅ useEffect always called unconditionally
   useEffect(() => {
     const getAllNFTs = async () => {
@@ -67,12 +66,39 @@ export default function Navbar() {
     getAllNFTs();
   }, [address, nftContext]);
 
-  const routeToSignup = () => router.push('/SignUp');
+
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+        try {
+            const response = await axios.get('/api/user/status');
+            console.log(response);
+            if (response.data.isLoggedin) {
+                setLoggedIn(true);
+                dispatch(assignUsername(response.data.username));
+            }
+        } catch (error) {
+            console.error("Failed to check auth status");
+        }
+    };
+
+    checkAuthStatus();
+},[]);
+
+  const routeToSignup = () => {
+    router.push('/SignUp');
+  }
 
   const walletLogic = () => {
     if (address) dispatch(assignAddress(''));
     else router.push('/connectWallet');
   };
+
+  const logoutHandler = async() => {
+      await axios.post('/api/user/logout');
+      dispatch(assignUsername(''))
+      showProfile(!profile);
+  }
 
   // ✅ Render safely even when nftContext is not ready
   return (
@@ -98,13 +124,14 @@ export default function Navbar() {
             onClick={username ? () => showProfile(!profile) : routeToSignup}
             className="transform transition-transform duration-100 ease-out active:scale-95 active:shadow-md hover:border-black w-[10vw] bg-[#A259FF] px-8 cursor-pointer text-white h-10 border border-2 border-[#A259FF] rounded-full"
           >
-            {username ? username.split('@')[0] : 'Sign Up'}
+            {username ? username.split(' ')[0] : 'Sign Up'}
           </button>
         </div>
       </div>
 
       {profile && (
-        <div className="flex scrollbar-hide flex-col items-center py-4 bg-white text-black w-[20vw] h-[80vh] overflow-y-scroll right-2 bottom-8 rounded-lg absolute">
+        <div className="z-3 flex scrollbar-hide flex-col items-center py-4 bg-white text-black w-[20vw] h-[80vh] overflow-y-scroll right-2 bottom-8 rounded-lg absolute">
+          <div><button className='bg-[#FF0000] rounded-lg w-[15vw] h-full py-3 flex justify-center items-center cursor-pointer  active:scale-95' onClick={()=>{logoutHandler()}} >Log Out</button></div>
           {metadata.length > 0 ? (
             metadata.map((nft) => (
               <div key={nft._id} className="flex flex-col mb-4">

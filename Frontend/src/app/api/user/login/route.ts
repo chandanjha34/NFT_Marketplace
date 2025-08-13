@@ -3,10 +3,15 @@ import User from '@/models/userModel'
 import { NextRequest, NextResponse } from 'next/server'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken';
+import { createHmac } from "crypto";
+import { cookies } from "next/headers";
+
+
 
 connect()
 
 export async function POST(request: NextRequest) {
+    const secret = process.env.SESSION_SECRET as string;
     try {
         const reqBody = await request.json()
         const {email, password } = reqBody
@@ -41,12 +46,24 @@ export async function POST(request: NextRequest) {
         console.log(process.env.JWT_SECRET as string)
         const token = jwt.sign(tokenData,process.env.JWT_SECRET!,{ expiresIn: '1d' });
         console.log(token);
+        
+        const sessionPayload = {username:user.username,isLoggedin:true};
+        const sessionString = JSON.stringify(sessionPayload);   
+        const signature = createHmac('sha256',secret)
+        .update(sessionString).digest('hex');   
+        const cookieValue = `${sessionString}.${signature}`;    
+        (await cookies()).set('auth', cookieValue, {
+        httpOnly: true, // Prevents client-side JS from accessing the cookie
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 7, // 1 week
+        path: '/', // Cookie is available on all pages
+        });
+
         const response = NextResponse.json({
             message: "Login successfully",
             success: true,
             tokenData
         })
-        response.cookies.set('token', token, { httpOnly: true })
         return response
         
 

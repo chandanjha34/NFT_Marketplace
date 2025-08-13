@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/Redux/store";
 import { assignUsername } from "@/Redux/features/auth";
 
+
+
 export default function SignUp(){
 
     const username = useSelector((state: RootState) => state.username.value )
@@ -37,8 +39,7 @@ export default function SignUp(){
         dispatch(assignUsername(response.data.newUser.username as string));
         console.log(username);
         console.log(response.data.newUser);
-        console.log(response.data.newUser.username);
-        
+        console.log(response.data.newUser.username)
 
         Router.push('/');                  
     } catch (error) {

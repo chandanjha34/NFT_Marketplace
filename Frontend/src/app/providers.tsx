@@ -11,7 +11,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     <NFTProvider>
       <Provider store={store}>
         {children}
-        <ToastContainer position="top-right" autoClose={5000} />
+        <ToastContainer position="top-center" autoClose={5000} />
       </Provider>
     </NFTProvider>
   )

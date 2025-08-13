@@ -8,6 +8,7 @@ import { RootState} from '@/Redux/store'
 import { useContext} from 'react';
 import { NFTContext } from "@/Wallet/contracts/NFTContext";
 import { toast } from "react-toastify";
+import { useRouter } from 'next/navigation';
 
 const Hero=()=>{
 
@@ -23,8 +24,9 @@ const Hero=()=>{
 
     const address = useSelector((state: RootState) => state.address.value );
     const email = useSelector((state: RootState) => state.email.value );
+    const username = useSelector((state: RootState) => state.username.value );
     const nftContext = useContext(NFTContext);
-    
+    const router = useRouter();
     
     
       if (!nftContext) {
@@ -86,6 +88,20 @@ const Hero=()=>{
 
     }
 
+    const checkAuth = () => {
+        if(!address){ 
+            router.push('/connectWallet');
+            toast.warn('Connect your wallet');
+            return;
+        }
+        if(!username) {
+            router.push('/SignUp');
+            toast.warn('Do Sign Up First')
+            return;
+        }
+        showMintFrom(!MintForm);
+    }
+
     return(
         <div className="h-screen w-full flex text-white">
             <div className="h-full w-full flex text-white">
@@ -121,8 +137,8 @@ const Hero=()=>{
                     <Image className=" hover:shadow-[0_3px_6px_rgba(255,255,255,0.6)] rounded-xl" src={cover} alt="" width={450} height={450}/>
                 </div>
             </div>
-            <div className="absolute right-8 bottom-8">
-                <Image width={80} height={80} alt="mint" onClick={()=>{showMintFrom(!MintForm)}} src={'/assets/plus1.png'} className="active:rotate-180 rounded-2xl transition-transform duration-500 ease-in-out cursor-pointer"/>
+            <div className="absolute right-8 bottom-8 z-1">
+                <Image width={80} height={80} alt="mint" onClick={()=>{checkAuth()}} src={'/assets/plus1.png'} className="active:rotate-180 rounded-2xl transition-transform duration-500 ease-in-out cursor-pointer"/>
             </div>
             {
                 MintForm &&
