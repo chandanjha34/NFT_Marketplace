@@ -98,6 +98,7 @@ export default function Navbar() {
       await axios.post('/api/user/logout');
       dispatch(assignUsername(''))
       showProfile(!profile);
+      console.log(isLoggedIn);
   }
 
   // ✅ Render safely even when nftContext is not ready

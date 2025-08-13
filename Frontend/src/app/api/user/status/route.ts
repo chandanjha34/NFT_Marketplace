@@ -28,6 +28,7 @@ export async function GET(){
             })
 
     } catch (error) {
-        
+        console.log(error);
+        return NextResponse.json({ isLoggedin: false, error: 'Server Error' }, { status: 500 });
     }
 }

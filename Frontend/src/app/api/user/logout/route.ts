@@ -8,6 +8,7 @@ export async function POST() {
     (await (cookies())).delete('auth'); // Use the name of your authentication cookie
     return NextResponse.json({ message: 'Logout successful' }, { status: 200 });
   } catch (error) {
+    console.log(error)
     return NextResponse.json({ message: 'Error logging out' }, { status: 500 });
   }
 }
