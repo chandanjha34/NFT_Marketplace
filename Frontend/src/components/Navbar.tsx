@@ -78,6 +78,7 @@ export default function Navbar() {
                 dispatch(assignUsername(response.data.username));
             }
         } catch (error) {
+          console.log(error);
             console.error("Failed to check auth status");
         }
     };
